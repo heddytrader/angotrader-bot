@@ -26,6 +26,7 @@ import {
 
 interface AnalysisViewProps {
   credits: UserCredits;
+  isOwner?: boolean;
   onDeductCredit: (isPro: boolean) => boolean;
   onOpenCreditModal: () => void;
   onSaveAnalysis: (result: AnalysisResult) => void;

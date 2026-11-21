@@ -24,6 +24,7 @@ import {
 
 interface DashboardViewProps {
   credits: UserCredits;
+  isOwner?: boolean;
   onNavigate: (tab: string) => void;
   onOpenCreditModal: () => void;
   recentAnalyses: AnalysisResult[];
