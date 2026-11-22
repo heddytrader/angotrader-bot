@@ -1,5 +1,6 @@
 'use client';
 
+import AuthView from '@/components/AuthView'
 import React, { useState, useEffect } from 'react';
 import { UserCredits, AnalysisResult, Asset } from '../types';
 import { ALL_ASSETS } from '../data/assets';
@@ -21,6 +22,8 @@ import { NewsView } from '../components/pages/NewsView';
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>('nova-analise');
   const [credits, setCredits] = useState<UserCredits>({ pro: 3, simple: 6 });
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userName, setUserName] = useState('')
   const [userEmail, setUserEmail] = useState<string>('edgar84inacio@gmail.com');
   const [isOwner, setIsOwner] = useState<boolean>(true);
   const [recentAnalyses, setRecentAnalyses] = useState<AnalysisResult[]>([]);
@@ -58,7 +61,9 @@ export default function Home() {
     } catch (e) {
       console.error('Erro ao ler localStorage', e);
     }
-    setLoaded(true);
+    const sess = localStorage.getItem('angotrader_session')
+      if (sess) { const s = JSON.parse(sess); setIsLoggedIn(true); setUserName(s.name); setUserEmail(s.email) }
+      setLoaded(true);
   }, []);
 
   // Atualizar email e recalcular Dono
@@ -132,6 +137,9 @@ export default function Home() {
   const handleSelectAssetForAnalysis = (asset: Asset) => {
     setActiveTab('nova-analise');
   };
+
+  if (!loaded) return null
+  if (!isLoggedIn) return <AuthView onLogin={(name, email) => { setUserName(name); setUserEmail(email); setIsLoggedIn(true) }} />
 
   return (
     <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black">
