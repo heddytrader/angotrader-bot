@@ -1,5 +1,16 @@
 'use client';
 
+// MERCADO ABERTO / FECHADO - LUANDA
+function mercadoAbertoAgora() {
+  const agora = new Date(new Date().toLocaleString("en-US", { timeZone: "Africa/Luanda" }));
+  const dia = agora.getDay();
+  const hora = agora.getHours();
+  if (dia === 6) return false;
+  if (dia === 0 && hora < 23) return false;
+  if (dia === 5 && hora >= 23) return false;
+  return true;
+}
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Asset, AnalysisResult } from '../types';
 import { 
@@ -260,6 +271,7 @@ export const LiveCandlestickChart: React.FC<LiveCandlestickChartProps> = ({
   useEffect(() => {
     const tfSec = getTfSeconds(selectedTf);
     const interval = setInterval(() => {
+            if (!mercadoAbertoAgora()) return;
       if (!seriesRef.current || !lastCandleRef.current) return;
 
       const last = lastCandleRef.current;
@@ -329,6 +341,11 @@ export const LiveCandlestickChart: React.FC<LiveCandlestickChartProps> = ({
           ? 'border-amber-400 ring-4 ring-amber-400/70 shadow-amber-500/40 animate-pulse'
           : 'border-amber-500/30'
       }`}
+            {!mercadoAbertoAgora() && (
+        <div style={{background:"#7f1d1d", color:"#fff", padding:10, borderRadius:10, textAlign:"center", fontWeight:900}}>
+          🔴 MERCADO FECHADO • Velas paradas • Luanda {new Date().toLocaleString('pt-AO', { timeZone: 'Africa/Luanda' })}
+        </div>
+      )}
     >
       {/* ALERTA VISUAL: PREÇO NA ZONA DE ENTRADA (QUANDO O PREÇO CHEGA PERTO) */}
       {isNearEntry && analysis && (
